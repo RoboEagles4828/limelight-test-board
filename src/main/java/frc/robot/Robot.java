@@ -37,7 +37,21 @@ public class Robot extends TimedRobot {
    * SmartDashboard integrated updating.
    */
   @Override
-  public void robotPeriodic() {}
+  public void robotPeriodic() {
+    // Basic targeting data
+    double tx = LimelightHelpers.getTX("");  // Horizontal offset from crosshair to target in degrees
+    double ty = LimelightHelpers.getTY("");  // Vertical offset from crosshair to target in degrees
+    double ta = LimelightHelpers.getTA("");  // Target area (0% to 100% of image)
+    boolean hasTarget = LimelightHelpers.getTV(""); // Do you have a valid target?
+
+    double txnc = LimelightHelpers.getTXNC("");  // Horizontal offset from principal pixel/point to target in degrees
+    double tync = LimelightHelpers.getTYNC("");  // Vertical  offset from principal pixel/point to target in degrees
+    
+    SmartDashboard.putNumber("limelight tx", tx);
+    SmartDashboard.putNumber("limelight ty", ty);
+    SmartDashboard.putNumber("limelight ta", ta);
+    SmartDashboard.putBoolean("limelight hasTarget?", hasTarget);
+  }
 
   /**
    * This autonomous (along with the chooser code above) shows how to select between different
