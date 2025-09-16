@@ -4,9 +4,12 @@
 
 package frc.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.LimelightHelpers.RawFiducial;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
@@ -27,6 +30,18 @@ public class Robot extends TimedRobot {
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
+
+    // (robotIP):5801 will now point to a Limelight3A's (id 0) web interface stream:
+// (robotIP):5800 will now point to a Limelight3A's (id 0) video stream:
+PortForwarder.add(5801, "172.29.0.1", 5801);
+PortForwarder.add(5802, "172.29.0.1", 5802);
+PortForwarder.add(5803, "172.29.0.1", 5803);
+PortForwarder.add(5804, "172.29.0.1", 5804);
+PortForwarder.add(5805, "172.29.0.1", 5805);
+PortForwarder.add(5806, "172.29.0.1", 5806);
+PortForwarder.add(5807, "172.29.0.1", 5807);
+PortForwarder.add(5808, "172.29.0.1", 5808);
+PortForwarder.add(5809, "172.29.0.1", 5809);
   }
 
   /**
@@ -36,21 +51,32 @@ public class Robot extends TimedRobot {
    * <p>This runs after the mode specific periodic functions, but before LiveWindow and
    * SmartDashboard integrated updating.
    */
+
+  int frame = 0;
   @Override
   public void robotPeriodic() {
     // Basic targeting data
+    LimelightHelpers.PoseEstimate mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue("");
     double tx = LimelightHelpers.getTX("");  // Horizontal offset from crosshair to target in degrees
     double ty = LimelightHelpers.getTY("");  // Vertical offset from crosshair to target in degrees
     double ta = LimelightHelpers.getTA("");  // Target area (0% to 100% of image)
+    double tid = LimelightHelpers.getFiducialID(""); // Fiducial ID of the target
     boolean hasTarget = LimelightHelpers.getTV(""); // Do you have a valid target?
 
     double txnc = LimelightHelpers.getTXNC("");  // Horizontal offset from principal pixel/point to target in degrees
     double tync = LimelightHelpers.getTYNC("");  // Vertical  offset from principal pixel/point to target in degrees
+
     
     SmartDashboard.putNumber("limelight tx", tx);
     SmartDashboard.putNumber("limelight ty", ty);
     SmartDashboard.putNumber("limelight ta", ta);
+    SmartDashboard.putNumber("limelight tid", tid);
     SmartDashboard.putBoolean("limelight hasTarget?", hasTarget);
+    SmartDashboard.putString("limelight pose", mt1.pose.toString());
+    SmartDashboard.putNumber("limelight timestamp", mt1.timestampSeconds);
+
+
+    SmartDashboard.putNumber("frame", frame++);
   }
 
   /**
